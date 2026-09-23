@@ -1,0 +1,21 @@
+{
+  "name": "Stetics - The Aesthetic Gym Tracker",
+  "short_name": "Stetics",
+  "description": "Stetics: Inspirado en la era dorada de los aesthetics (David Laid). Cuenta tus series, repeticiones, cargas, descansos y evolución de fuerza.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#050507",
+  "theme_color": "#050507",
+  "icons": [
+    {
+      "src": "assets/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "assets/icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
