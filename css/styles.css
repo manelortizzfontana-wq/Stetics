@@ -1593,6 +1593,43 @@ body {
     display: none !important;
 }
 
+/* ===================================================================
+   JERARQUÍA Y STACKING DE MODALES (Z-INDEX)
+   Garantiza que el selector de ejercicios aparezca siempre POR ENCIMA
+   del creador de rutinas.
+   =================================================================== */
+#create-routine-modal {
+    z-index: 210 !important;
+}
+
+#exercise-guide-modal {
+    z-index: 250 !important;
+}
+
+#workout-summary-modal {
+    z-index: 280 !important;
+}
+
+#muscle-rank-modal {
+    z-index: 290 !important;
+}
+
+/* El selector de ejercicios debe estar SIEMPRE por encima del creador de rutinas */
+#exercise-selector-modal {
+    z-index: 320 !important;
+    background: rgba(3, 4, 7, 0.98) !important;
+}
+
+/* El creador de ejercicios personalizados por encima del selector */
+#create-exercise-modal {
+    z-index: 360 !important;
+    background: rgba(3, 4, 7, 0.99) !important;
+}
+
+#rank-up-celebration-modal {
+    z-index: 400 !important;
+}
+
 .modal-dialog {
     background: #0e1017;
     border: 1.5px solid var(--border-color);

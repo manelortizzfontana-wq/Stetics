@@ -33,10 +33,7 @@ const App = {
         });
 
         const initialHash = window.location.hash.replace('#', '');
-        if (window.location.search.includes('testbuilder')) {
-            this.switchView('routines', false);
-            this.openCreateRoutineModal();
-        } else if (['workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(initialHash)) {
+        if (['workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(initialHash)) {
             this.switchView(initialHash, false);
         } else if (initialHash === 'testmodal') {
             this.switchView('analytics', false);
@@ -866,7 +863,7 @@ const App = {
     // CREADOR DE RUTINAS POR DÍAS (SPLIT BUILDER MOBILE-FIRST)
     // ===================================================================
     openCreateRoutineModal() {
-        // Inicializar con plantilla modular personalizable (ej. Empuje, Tirón, Pierna)
+        const customCount = window.StorageService ? window.StorageService.getCustomRoutines().length : 0;
         this.tempRoutineDays = [
             { id: 'day_' + Date.now() + '_1', name: 'Día 1: Empuje (Pecho/Hombro/Tríceps)', focus: 'Pecho, Hombro y Tríceps', exercises: [] },
             { id: 'day_' + Date.now() + '_2', name: 'Día 2: Tirón (Espalda/Bíceps)', focus: 'Espalda y Bíceps', exercises: [] },
@@ -877,8 +874,8 @@ const App = {
         const modal = document.getElementById('create-routine-modal');
         const nameInput = document.getElementById('new-routine-name');
         const descInput = document.getElementById('new-routine-desc');
-        if (nameInput) nameInput.value = 'Push Pull Legs';
-        if (descInput) descInput.value = 'División clásica de 3 a 6 días por semana';
+        if (nameInput) nameInput.value = customCount === 0 ? 'Push Pull Legs' : `Mi Rutina ${customCount + 1}`;
+        if (descInput) descInput.value = 'División de hipertrofia personalizada';
 
         this.renderRoutineBuilderDays();
         if (modal) modal.classList.remove('hidden');
@@ -940,7 +937,9 @@ const App = {
         this.openExerciseSelectorModal((exerciseId) => {
             const ex = window.StorageService.getExerciseById(exerciseId);
             if (ex && this.tempRoutineDays[this.activeRoutineDayIndex]) {
-                this.tempRoutineDays[this.activeRoutineDayIndex].exercises.push({
+                const currentDay = this.tempRoutineDays[this.activeRoutineDayIndex];
+                if (!currentDay.exercises) currentDay.exercises = [];
+                currentDay.exercises.push({
                     exerciseId: ex.id,
                     name: ex.name,
                     sets: 3,
@@ -949,6 +948,7 @@ const App = {
                     restSeconds: ex.restTimeSeconds || 90
                 });
                 this.renderRoutineBuilderDays();
+                this.showToast(`¡"${ex.name}" añadido a ${currentDay.name}! 🔥`);
             }
         });
     },
@@ -1017,35 +1017,48 @@ const App = {
     saveNewRoutineFromBuilder() {
         const nameInput = document.getElementById('new-routine-name');
         const descInput = document.getElementById('new-routine-desc');
-        const name = nameInput ? nameInput.value.trim() : '';
+        const customCount = window.StorageService ? window.StorageService.getCustomRoutines().length : 0;
+        let name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : `Mi Rutina ${customCount + 1}`;
 
-        if (!name) {
-            alert('Por favor, introduce un nombre para la rutina.');
-            if (nameInput) nameInput.focus();
+        // Obtener solo los días que tienen al menos un ejercicio añadido
+        let daysToSave = this.tempRoutineDays.filter(d => d.exercises && d.exercises.length > 0);
+
+        if (daysToSave.length === 0) {
+            alert('Por favor, pulsa en "+ Añadir Ejercicio" para agregar al menos un ejercicio a tu rutina antes de guardarla.');
             return;
         }
 
-        const totalExercises = this.tempRoutineDays.reduce((acc, d) => acc + (d.exercises ? d.exercises.length : 0), 0);
-        if (totalExercises === 0) {
-            alert('Añade al menos un ejercicio a alguno de los días de tu rutina antes de guardar.');
-            return;
-        }
+        // Generar resumen automático de grupos musculares para cada día si está vacío
+        daysToSave = daysToSave.map(day => {
+            if (!day.focus || day.focus.trim() === '') {
+                const muscleSet = new Set();
+                (day.exercises || []).forEach(item => {
+                    const ex = window.StorageService.getExerciseById(item.exerciseId);
+                    if (ex && ex.primaryMuscles) {
+                        ex.primaryMuscles.forEach(m => muscleSet.add(m));
+                    }
+                });
+                day.focus = Array.from(muscleSet).slice(0, 3).join(', ') || `${day.exercises.length} ejercicios`;
+            }
+            return day;
+        });
 
         const newRoutine = {
             id: 'custom_' + Date.now(),
             name: name,
             badge: 'Personalizada',
             level: 'A tu medida',
-            description: descInput ? descInput.value.trim() : 'Rutina personalizada dividida por días.',
+            description: descInput && descInput.value.trim() ? descInput.value.trim() : 'Rutina personalizada dividida por días.',
             guidelines: ['Progresa en sobrecarga sesión a sesión en cada día de tu split.'],
-            days: this.tempRoutineDays
+            days: daysToSave,
+            exercises: daysToSave.flatMap(d => d.exercises || [])
         };
 
         window.StorageService.saveCustomRoutine(newRoutine);
         this.closeCreateRoutineModal();
         this.routineActiveCategory = 'my';
         this.renderRoutinesView();
-        this.showToast(`¡Rutina "${name}" guardada con éxito! 🔥`);
+        this.showToast(`¡Rutina "${name}" guardada con éxito en Mis Rutinas! 🔥`);
     },
 
     deleteCustomRoutine(id) {
