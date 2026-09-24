@@ -3,7 +3,7 @@
 // ===================================================================
 
 const App = {
-    currentTab: 'routines',
+    currentTab: 'home',
     routineActiveCategory: null,
     exerciseSelectorCallback: null,
     tempRoutineDays: [],
@@ -22,32 +22,36 @@ const App = {
         this.renderExercisesCatalog();
         this.renderHistoryView();
         this.loadSettingsForm();
+        this.refreshHomeQuote();
         this.checkWelcomeScreen();
 
-        // Soporte de navegación por URL hash (#exercises, #analytics, etc.)
+        // Soporte de navegación por URL hash (#home, #exercises, #analytics, etc.)
         window.addEventListener('hashchange', () => {
             const hash = window.location.hash.replace('#', '');
-            if (['workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(hash)) {
+            if (['home', 'workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(hash)) {
                 this.switchView(hash, false);
             }
         });
 
         const initialHash = window.location.hash.replace('#', '');
-        if (['workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(initialHash)) {
+        if (['home', 'workout', 'routines', 'exercises', 'analytics', 'history', 'settings'].includes(initialHash)) {
             this.switchView(initialHash, false);
         } else if (initialHash === 'testmodal') {
-            this.switchView('analytics', false);
+            this.switchView('home', false);
             setTimeout(() => { if (window.RankingService) window.RankingService.openMuscleModal('pecho'); }, 200);
         } else if (initialHash === 'testback') {
-            this.switchView('analytics', false);
+            this.switchView('home', false);
             setTimeout(() => { if (window.RankingService) window.RankingService.toggleSilhouetteView(); }, 200);
         } else if (initialHash === 'testbuilder') {
             this.switchView('routines', false);
             setTimeout(() => this.openCreateRoutineModal(), 200);
+        } else if (initialHash === 'teststartchoice') {
+            this.switchView('home', false);
+            setTimeout(() => this.openStartWorkoutChoiceModal(), 200);
         } else if (window.WorkoutTracker && window.WorkoutTracker.activeSession) {
             this.switchView('workout', false);
         } else {
-            this.switchView('routines', false);
+            this.switchView('home', false);
         }
     },
 
@@ -60,7 +64,7 @@ const App = {
         this.headerAthleteName = document.getElementById('header-athlete-name');
     },
 
-    // Menú de entrada permanente y citas motivacionales de culturistas
+    // Menú de entrada inicial y configuración de usuario
     checkWelcomeScreen() {
         if (sessionStorage.getItem('stetics_test_skip_welcome') === 'true') {
             sessionStorage.removeItem('stetics_test_skip_welcome');
@@ -78,38 +82,32 @@ const App = {
         if (window.location.search.includes('nowelcome')) {
             if (this.welcomeOverlay) this.welcomeOverlay.classList.add('hidden');
             if (window.RankingService) window.RankingService.updateHeaderBadge();
+            if (window.location.hash === '#testmodal') {
+                setTimeout(() => { if (window.RankingService) window.RankingService.openMuscleModal('pecho'); }, 200);
+            } else if (window.location.hash === '#testback') {
+                setTimeout(() => { if (window.RankingService) window.RankingService.toggleSilhouetteView(); }, 200);
+            }
             return;
         }
 
         const savedName = window.StorageService ? window.StorageService.getUserName() : '';
         const promptLabel = document.getElementById('welcome-label-prompt');
-        const quoteTextEl = document.getElementById('welcome-quote-text');
-        const quoteAuthorEl = document.getElementById('welcome-quote-author');
-        const quoteTitleEl = document.getElementById('welcome-quote-title');
 
-        // Cargar cita motivacional célebre en español
-        if (window.QuotesService) {
-            window.QuotesService.renderQuoteInElement(quoteTextEl, quoteAuthorEl, quoteTitleEl);
-        }
-
-        // Configurar saludo y campo de nombre
         if (savedName) {
             if (this.headerAthleteName) this.headerAthleteName.textContent = savedName;
             if (this.welcomeInput) this.welcomeInput.value = savedName;
-            if (promptLabel) {
-                promptLabel.innerHTML = `¡Hola de nuevo, <strong style="color: var(--primary);">${savedName}</strong>! Listo para romper récords:`;
-            }
+            // Si ya tiene nombre, nunca bloquear con overlay; va directo al Menú Principal
+            if (this.welcomeOverlay) this.welcomeOverlay.classList.add('hidden');
         } else {
+            // Primera vez: solicitar nombre
             if (promptLabel) {
                 promptLabel.textContent = 'Introduce tu nombre o alias:';
             }
-        }
-
-        // Siempre mostrar el menú principal al inicio de la sesión
-        if (this.welcomeOverlay) {
-            this.welcomeOverlay.classList.remove('hidden');
-            this.welcomeOverlay.style.opacity = '1';
-            this.welcomeOverlay.style.transform = 'scale(1)';
+            if (this.welcomeOverlay) {
+                this.welcomeOverlay.classList.remove('hidden');
+                this.welcomeOverlay.style.opacity = '1';
+                this.welcomeOverlay.style.transform = 'scale(1)';
+            }
         }
 
         // Actualizar rango en el header si existe
@@ -118,18 +116,56 @@ const App = {
         }
     },
 
-    refreshWelcomeQuote() {
+    refreshHomeQuote() {
         if (window.QuotesService) {
-            const quoteTextEl = document.getElementById('welcome-quote-text');
-            const quoteAuthorEl = document.getElementById('welcome-quote-author');
-            const quoteTitleEl = document.getElementById('welcome-quote-title');
-            window.QuotesService.renderQuoteInElement(quoteTextEl, quoteAuthorEl, quoteTitleEl);
+            const quoteTextEl = document.getElementById('home-quote-text');
+            const quoteAuthorEl = document.getElementById('home-quote-author');
+            window.QuotesService.renderQuoteInElement(quoteTextEl, quoteAuthorEl, null);
             
-            // Sonido de clic sutil
+            // Sonido sutil
             if (window.RestTimer) {
-                window.RestTimer.playTone(700, 0.05, 'sine');
+                window.RestTimer.playTone(700, 0.04, 'sine');
             }
         }
+    },
+
+    updateHomeHeroStatus() {
+        const heroTitle = document.getElementById('home-hero-title');
+        const heroSubtitle = document.getElementById('home-hero-subtitle');
+        const heroBtn = document.getElementById('btn-hero-workout');
+        if (!heroTitle || !heroSubtitle || !heroBtn) return;
+
+        if (window.WorkoutTracker && window.WorkoutTracker.activeSession) {
+            const session = window.WorkoutTracker.activeSession;
+            const totalSecs = session.durationSeconds || 0;
+            const mins = Math.floor(totalSecs / 60).toString().padStart(2, '0');
+            const secs = (totalSecs % 60).toString().padStart(2, '0');
+            heroTitle.textContent = 'CONTINUAR ENTRENAMIENTO';
+            heroSubtitle.textContent = `⏱️ En curso (${mins}:${secs}) • Toca para volver`;
+            heroBtn.classList.add('hero-active-session');
+        } else {
+            heroTitle.textContent = 'INICIAR ENTRENAMIENTO';
+            heroSubtitle.textContent = 'Comenzar sesión de hoy';
+            heroBtn.classList.remove('hero-active-session');
+        }
+    },
+
+    handleHeroWorkoutClick() {
+        if (window.WorkoutTracker && window.WorkoutTracker.activeSession) {
+            this.switchView('workout');
+        } else {
+            this.openStartWorkoutChoiceModal();
+        }
+    },
+
+    openStartWorkoutChoiceModal() {
+        const modal = document.getElementById('start-workout-choice-modal');
+        if (modal) modal.classList.remove('hidden');
+    },
+
+    closeStartWorkoutChoiceModal() {
+        const modal = document.getElementById('start-workout-choice-modal');
+        if (modal) modal.classList.add('hidden');
     },
 
     submitWelcomeName() {
@@ -153,14 +189,14 @@ const App = {
         }
 
         if (this.welcomeOverlay) {
-            this.welcomeOverlay.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            this.welcomeOverlay.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             this.welcomeOverlay.style.opacity = '0';
             this.welcomeOverlay.style.transform = 'scale(1.04)';
             setTimeout(() => {
                 this.welcomeOverlay.classList.add('hidden');
                 this.welcomeOverlay.style.opacity = '1';
                 this.welcomeOverlay.style.transform = 'scale(1)';
-            }, 400);
+            }, 300);
         }
 
         // Tono y felicitación de entrada
@@ -169,6 +205,7 @@ const App = {
             setTimeout(() => window.RestTimer.playTone(880, 0.3, 'sine'), 160); // La5
         }
 
+        this.switchView('home');
         this.showToast(`¡Bienvenido a STETICS, ${name}! We're all gonna make it 🔥`);
     },
 
@@ -310,7 +347,12 @@ const App = {
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        if (viewName === 'analytics') {
+        if (viewName === 'home') {
+            this.updateHomeHeroStatus();
+            if (window.RankingService) {
+                window.RankingService.renderSilhouetteSection();
+            }
+        } else if (viewName === 'analytics') {
             if (window.RankingService) {
                 window.RankingService.renderSilhouetteSection();
             }

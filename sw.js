@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stetics-cache-v5';
+const CACHE_NAME = 'stetics-cache-v7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

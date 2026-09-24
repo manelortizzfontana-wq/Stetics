@@ -16,28 +16,15 @@
 <body>
 
     <!-- ============================================================== -->
-    <!-- MENÚ DE ENTRADA / PANTALLA DE BIENVENIDA (STETICS ERA)         -->
+    <!-- PANTALLA DE ENTRADA / REGISTRO INICIAL (STETICS ERA)            -->
     <!-- ============================================================== -->
-    <div id="welcome-screen-overlay" class="welcome-screen-overlay">
+    <div id="welcome-screen-overlay" class="welcome-screen-overlay hidden">
         <div class="welcome-card">
             <div class="welcome-emblem">
                 <img src="./assets/icon.jpg" alt="Stetics Icon" class="welcome-emblem-img">
             </div>
             <h1 class="welcome-title">STETICS</h1>
             <p class="welcome-tagline">The Aesthetic Era</p>
-
-            <!-- CITA CÉLEBRE MOTIVACIONAL DE CULTURISTAS EN ESPAÑOL -->
-            <div class="welcome-quote-card">
-                <span class="quote-symbol">“</span>
-                <p class="welcome-quote" id="welcome-quote-text">“Las últimas tres o cuatro repeticiones son las que hacen crecer el músculo. Esa zona de dolor divide a un campeón.”</p>
-                <div class="welcome-quote-meta">
-                    <strong class="quote-author" id="welcome-quote-author">Arnold Schwarzenegger</strong>
-                    <span class="quote-title" id="welcome-quote-title">7× Mr. Olympia</span>
-                </div>
-                <button type="button" class="btn-refresh-quote" id="btn-refresh-quote" onclick="App.refreshWelcomeQuote()" title="Ver otra frase motivacional">
-                    🎲 Otra frase
-                </button>
-            </div>
 
             <form class="welcome-form" id="welcome-form" onsubmit="event.preventDefault(); App.submitWelcomeName();">
                 <div class="welcome-input-group">
@@ -53,7 +40,7 @@
                     />
                 </div>
                 <button type="submit" class="welcome-btn-start" id="btn-welcome-start">
-                    <span>INICIAR</span>
+                    <span>ENTRAR</span>
                     <span style="font-size: 1.3rem;">🔥</span>
                 </button>
             </form>
@@ -81,9 +68,118 @@
     <main class="main-content">
 
         <!-- ============================================================== -->
+        <!-- MENÚ PRINCIPAL (MINIMALIST DASHBOARD & HUB)                     -->
+        <!-- ============================================================== -->
+        <section id="view-home" class="app-view">
+            <div class="home-container">
+                <!-- CITA MOTIVACIONAL COMPACTA -->
+                <div class="home-quote-card">
+                    <div class="home-quote-body">
+                        <p class="home-quote-text" id="home-quote-text">“Las últimas tres o cuatro repeticiones dividen a un campeón.”</p>
+                        <div class="home-quote-meta">
+                            <span class="home-quote-author" id="home-quote-author">Arnold Schwarzenegger</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-home-dice" onclick="App.refreshHomeQuote()" title="Cambiar frase">
+                        🎲
+                    </button>
+                </div>
+
+                <!-- TARJETA PRINCIPAL DE LA SILUETA HUMANA GAMER (AVATAR HOME) -->
+                <div class="silhouette-main-card home-silhouette-card">
+                    <div class="silhouette-card-topbar">
+                        <div class="athlete-overall-rank-display">
+                            <span class="overall-label">RANGO GLOBAL:</span>
+                            <strong class="overall-tier-val">Cargando...</strong>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm btn-toggle-silhouette-view btn-home-rotate" onclick="RankingService.toggleSilhouetteView()">
+                            🔄 Girar
+                        </button>
+                    </div>
+
+                    <!-- CONTENEDOR DE LA SILUETA SVG DINÁMICA -->
+                    <div class="silhouette-viewport silhouette-interactive-container">
+                        <!-- Inyectado por RankingService -->
+                    </div>
+
+                    <div class="silhouette-hint">
+                        <span>💡</span> Toca un músculo para ver tu nivel y marcas de 1RM.
+                    </div>
+                </div>
+
+                <!-- BOTÓN HERO: INICIAR / CONTINUAR ENTRENAMIENTO -->
+                <div class="home-hero-wrap">
+                    <button class="btn-hero-workout" id="btn-hero-workout" onclick="App.handleHeroWorkoutClick()">
+                        <div class="hero-left">
+                            <span class="hero-icon-flame">⚡</span>
+                            <div class="hero-text-col">
+                                <span class="hero-title" id="home-hero-title">INICIAR ENTRENAMIENTO</span>
+                                <span class="hero-subtitle" id="home-hero-subtitle">Comenzar sesión de hoy</span>
+                            </div>
+                        </div>
+                        <span class="hero-action-arrow">→</span>
+                    </button>
+                </div>
+
+                <!-- MENÚ DE OPCIONES (CUADRÍCULA 2x2 TÁCTIL Y LIMPIA) -->
+                <div class="home-menu-grid">
+                    <div class="home-menu-card card-routines" onclick="App.switchView('routines')">
+                        <div class="card-icon-chip chip-orange">📋</div>
+                        <div class="card-text-wrap">
+                            <h3>Rutinas</h3>
+                            <span>Mis divisiones</span>
+                        </div>
+                        <span class="card-arrow-indicator">›</span>
+                    </div>
+
+                    <div class="home-menu-card card-analytics" onclick="App.switchView('analytics')">
+                        <div class="card-icon-chip chip-green">📈</div>
+                        <div class="card-text-wrap">
+                            <h3>Progreso</h3>
+                            <span>Gráficos y rangos</span>
+                        </div>
+                        <span class="card-arrow-indicator">›</span>
+                    </div>
+
+                    <div class="home-menu-card card-exercises" onclick="App.switchView('exercises')">
+                        <div class="card-icon-chip chip-blue">💪</div>
+                        <div class="card-text-wrap">
+                            <h3>Ejercicios</h3>
+                            <span>Biblioteca</span>
+                        </div>
+                        <span class="card-arrow-indicator">›</span>
+                    </div>
+
+                    <div class="home-menu-card card-history" onclick="App.switchView('history')">
+                        <div class="card-icon-chip chip-purple">📅</div>
+                        <div class="card-text-wrap">
+                            <h3>Historial</h3>
+                            <span>Sesiones pasadas</span>
+                        </div>
+                        <span class="card-arrow-indicator">›</span>
+                    </div>
+                </div>
+
+                <!-- ACCESO RÁPIDO A AJUSTES -->
+                <div class="home-footer-strip">
+                    <button class="home-settings-link" onclick="App.switchView('settings')">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <span>⚙️</span>
+                            <span>Ajustes y Calculadora 1RM</span>
+                        </span>
+                        <span style="font-size: 1.1rem; opacity: 0.6;">›</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
         <!-- VISTA 1: ENTRENAMIENTO ACTIVO (SERIES, REPETICIONES, CARGAS)   -->
         <!-- ============================================================== -->
         <section id="view-workout" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="workout-header-bar">
                 <div class="workout-header-info">
                     <span class="exercise-cat-tag cat-pecho">SESIÓN EN CURSO</span>
@@ -127,13 +223,13 @@
         <!-- ============================================================== -->
         <!-- VISTA 2: RUTINAS (SIMPLIFICADA MOBILE-FIRST POR DÍAS)          -->
         <!-- ============================================================== -->
-        <section id="view-routines" class="app-view">
+        <section id="view-routines" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="view-header routines-view-header">
                 <div>
-                    <h2>Rutinas de Entrenamiento</h2>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin: 2px 0 0 0;">
-                        Selecciona tu día de entreno o diseña tu división personalizada.
-                    </p>
+                    <h2>Rutinas</h2>
                 </div>
                 <button class="btn btn-primary btn-block-mobile" id="btn-open-create-routine" onclick="App.openCreateRoutineModal()">
                     + Crear Mi Rutina 🔥
@@ -160,12 +256,12 @@
         <!-- VISTA 3: CATÁLOGO DE EJERCICIOS Y GUÍAS ANATÓMICAS             -->
         <!-- ============================================================== -->
         <section id="view-exercises" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="view-header">
                 <div>
                     <h2>Biblioteca de Ejercicios</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        Ilustraciones anatómicas, técnica paso a paso y ejercicios personalizados para tu progreso.
-                    </p>
                 </div>
                 <button class="btn btn-primary" onclick="App.openCreateCustomExerciseModal('')">
                     + Crear Ejercicio
@@ -197,12 +293,12 @@
         <!-- VISTA 4: RANGOS ESTÉTICOS, SILUETA Y EVOLUCIÓN DE CARGAS       -->
         <!-- ============================================================== -->
         <section id="view-analytics" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="view-header">
                 <div>
-                    <h2>Silueta Anatómica y Rangos Estéticos</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        Tus marcas de fuerza desbloquean rangos en cada músculo. Toca cualquier grupo muscular en la silueta para ver tus estadísticas y misiones.
-                    </p>
+                    <h2>Progreso & Rangos</h2>
                 </div>
             </div>
 
@@ -225,18 +321,18 @@
                         <span class="overall-label">RANGO GLOBAL:</span>
                         <strong class="overall-tier-val" id="overall-tier-val">Cargando...</strong>
                     </div>
-                    <button class="btn btn-secondary btn-sm" id="btn-toggle-silhouette-view" onclick="RankingService.toggleSilhouetteView()">
+                    <button class="btn btn-secondary btn-sm btn-toggle-silhouette-view" id="btn-toggle-silhouette-view" onclick="RankingService.toggleSilhouetteView()">
                         🔄 Girar a Espalda
                     </button>
                 </div>
 
                 <!-- CONTENEDOR DE LA SILUETA SVG DINÁMICA -->
-                <div class="silhouette-viewport" id="silhouette-interactive-container">
+                <div class="silhouette-viewport silhouette-interactive-container" id="silhouette-interactive-container">
                     <!-- Inyectado por RankingService -->
                 </div>
 
                 <div class="silhouette-hint">
-                    <span>💡</span> Toca cualquier músculo para inspeccionar su nivel de 1RM, EXP y cuánto peso te falta para subir de rango.
+                    <span>💡</span> Toca un músculo para ver tu nivel y marcas de 1RM.
                 </div>
             </div>
 
@@ -252,9 +348,6 @@
             <div class="view-header" style="margin-bottom: 12px;">
                 <div>
                     <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">📈 Gráfico de Progresión de Cargas</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin: 2px 0 0 0;">
-                        Sobrecarga progresiva sesión a sesión por ejercicio.
-                    </p>
                 </div>
             </div>
 
@@ -288,12 +381,12 @@
         <!-- VISTA 5: HISTORIAL DE ENTRENAMIENTOS                           -->
         <!-- ============================================================== -->
         <section id="view-history" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="view-header">
                 <div>
-                    <h2>Historial de Entrenamientos</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        Registro histórico de todas las sesiones realizadas con sus cargas y series.
-                    </p>
+                    <h2>Historial</h2>
                 </div>
             </div>
 
@@ -306,6 +399,9 @@
         <!-- VISTA 6: AJUSTES, CALCULADORA 1RM Y COPIAS DE SEGURIDAD        -->
         <!-- ============================================================== -->
         <section id="view-settings" class="app-view hidden">
+            <button class="btn-back-home" onclick="App.switchView('home')">
+                <span>←</span> Menú Principal
+            </button>
             <div class="view-header">
                 <h2>Ajustes y Herramientas</h2>
             </div>
@@ -316,7 +412,6 @@
                 <div class="settings-row">
                     <div>
                         <strong id="settings-current-name">Atleta Stetics</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-muted);">Tu alias mostrado en cabecera y récords personales</p>
                     </div>
                     <button class="btn btn-primary btn-sm" onclick="App.openEditNamePrompt()">
                         Cambiar Nombre
@@ -324,8 +419,7 @@
                 </div>
                 <div class="settings-row" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
                     <div>
-                        <strong>Peso Corporal (kg)</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-muted);">Utilizado para calibrar tus rangos de fuerza relativa en la silueta</p>
+                        <strong>Peso Corporal</strong>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <input type="number" id="setting-athlete-weight" class="set-input" style="width: 75px;" value="75" min="35" max="250" step="0.5" onchange="App.handleWeightChange(this.value)">
@@ -336,10 +430,7 @@
 
             <!-- Calculadora de 1RM -->
             <div class="settings-section">
-                <h3>🧮 Calculadora de 1RM y Porcentajes de Carga</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-                    Introduce el peso y las repeticiones que lograste para estimar tu fuerza máxima (1 repetición máxima) y planificar tus cargas de trabajo.
-                </p>
+                <h3>🧮 Calculadora de 1RM</h3>
                 
                 <div class="calc-inputs-grid">
                     <div>
@@ -375,11 +466,11 @@
 
             <!-- Preferencias de la aplicación -->
             <div class="settings-section">
-                <h3>⚙️ Preferencias del Gimnasio</h3>
+                <h3>⚙️ Preferencias</h3>
                 <div class="settings-row">
                     <div>
                         <strong>Temporizador automático</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-muted);">Iniciar descanso al marcar una serie completada (✓)</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Iniciar descanso al marcar serie completada</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="setting-auto-timer" checked>
@@ -389,7 +480,7 @@
                 <div class="settings-row">
                     <div>
                         <strong>Efectos de sonido</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-muted);">Pitidos de aviso al finalizar el descanso (Web Audio)</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Sonidos de aviso al finalizar descanso</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="setting-sound" checked>
@@ -400,20 +491,17 @@
 
             <!-- Respaldo de datos -->
             <div class="settings-section">
-                <h3>💾 Copias de Seguridad (Backup)</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">
-                    Todos tus datos se guardan de forma privada en tu dispositivo. Puedes exportarlos a un archivo JSON para tener una copia en tu ordenador o transferirlos a tu móvil.
-                </p>
+                <h3>💾 Copias de Seguridad</h3>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <button class="btn btn-primary btn-sm" id="btn-export-backup">
-                        📥 Descargar Copia de Seguridad
+                        📥 Descargar Copia
                     </button>
                     <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
                         📤 Restaurar Copia
                         <input type="file" id="input-import-backup" accept=".json" style="display: none;" />
                     </label>
                     <button class="btn btn-secondary btn-sm" id="btn-settings-load-demo">
-                        📊 Cargar Datos de Demostración
+                        📊 Cargar Datos Demo
                     </button>
                 </div>
             </div>
@@ -422,9 +510,29 @@
     </main>
 
     <!-- ============================================================== -->
+    <!-- MODAL: OPCIONES AL INICIAR ENTRENAMIENTO                        -->
+    <!-- ============================================================== -->
+    <div id="start-workout-choice-modal" class="modal-overlay hidden">
+        <div class="modal-dialog" style="max-width: 380px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h3 style="font-size: 1.15rem; margin: 0;">⚡ Entrenar</h3>
+                <button class="btn-icon" style="position: absolute; right: 12px; top: 12px;" onclick="App.closeStartWorkoutChoiceModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 24px 18px; display: flex; flex-direction: column; gap: 14px;">
+                <button class="btn btn-primary" style="padding: 16px; font-size: 1.05rem; justify-content: center; border-radius: var(--radius-md);" onclick="App.closeStartWorkoutChoiceModal(); App.switchView('routines');">
+                    📋 Elegir una Rutina
+                </button>
+                <button class="btn btn-secondary" style="padding: 16px; font-size: 1.05rem; justify-content: center; border-radius: var(--radius-md);" onclick="App.closeStartWorkoutChoiceModal(); WorkoutTracker.startWorkout(null);">
+                    ⚡ Entrenamiento Libre (Vacío)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
     <!-- TEMPORIZADOR FLOTANTE PERSISTENTE                              -->
     <!-- ============================================================== -->
-    <div id="floating-timer-widget" class="floating-timer timer-minimized">
+    <div id="floating-timer-widget" class="floating-timer timer-minimized hidden">
         <!-- Vista minimizada -->
         <div class="timer-mini-body">
             <span>⏱️</span>
@@ -722,6 +830,7 @@
     <script src="./js/charts.js"></script>
     <script src="./js/workout.js"></script>
     <script src="./js/app.js"></script>
+
 
     <!-- REGISTRO DEL SERVICE WORKER PARA CAPACIDAD OFFLINE -->
     <script>

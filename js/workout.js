@@ -140,6 +140,9 @@ const WorkoutTracker = {
             if (this.activeSession) {
                 this.activeSession.durationSeconds = (this.activeSession.durationSeconds || 0) + 1;
                 this.updateDurationDisplay();
+                if (window.App && window.App.currentTab === 'home') {
+                    window.App.updateHomeHeroStatus();
+                }
                 // Guardar periódicamente cada 15 segundos
                 if (this.activeSession.durationSeconds % 15 === 0) {
                     this.saveState();
@@ -352,9 +355,13 @@ const WorkoutTracker = {
         if (window.RankingService) {
             window.RankingService.checkSessionRankUp(oldOverallLevel);
             window.RankingService.updateHeaderBadge();
+            window.RankingService.renderSilhouetteSection();
         }
         if (window.AnalyticsCharts) window.AnalyticsCharts.render();
-        if (window.App) window.App.renderHistoryView();
+        if (window.App) {
+            window.App.renderHistoryView();
+            window.App.updateHomeHeroStatus();
+        }
     },
 
     discardWorkout() {
@@ -367,7 +374,8 @@ const WorkoutTracker = {
             }
             this.render();
             if (window.App) {
-                window.App.switchView('routines');
+                window.App.updateHomeHeroStatus();
+                window.App.switchView('home');
                 window.App.showToast('Entrenamiento descartado.');
             }
         }

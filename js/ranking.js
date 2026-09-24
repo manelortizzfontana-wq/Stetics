@@ -432,37 +432,39 @@ const RankingService = {
 
     // Inyectar colores de rangos en los trazados del SVG
     applyRankColorsToSvg() {
-        const svg = document.getElementById('aesthetic-silhouette-svg');
-        if (!svg) return;
+        const svgs = document.querySelectorAll('.silhouette-svg-main, #aesthetic-silhouette-svg');
+        if (!svgs.length) return;
 
-        const nodes = svg.querySelectorAll('.muscle-group-node');
-        nodes.forEach(groupNode => {
-            const muscleKey = groupNode.getAttribute('data-muscle');
-            if (!muscleKey) return;
+        svgs.forEach(svg => {
+            const nodes = svg.querySelectorAll('.muscle-group-node');
+            nodes.forEach(groupNode => {
+                const muscleKey = groupNode.getAttribute('data-muscle');
+                if (!muscleKey) return;
 
-            const stats = this.getMuscleRankStats(muscleKey);
-            const rank = stats.currentRank;
+                const stats = this.getMuscleRankStats(muscleKey);
+                const rank = stats.currentRank;
 
-            // Asignar colores a todos los paths del grupo muscular
-            const paths = groupNode.querySelectorAll('.muscle-mesh-path');
-            paths.forEach(p => {
-                p.style.fill = rank.color;
-                p.style.filter = `drop-shadow(0 0 6px ${rank.glow})`;
-                p.style.transition = 'all 0.4s ease';
+                // Asignar colores a todos los paths del grupo muscular
+                const paths = groupNode.querySelectorAll('.muscle-mesh-path');
+                paths.forEach(p => {
+                    p.style.fill = rank.color;
+                    p.style.filter = `drop-shadow(0 0 6px ${rank.glow})`;
+                    p.style.transition = 'all 0.4s ease';
 
-                if (rank.id === 'emerald') {
-                    p.classList.add('rank-pulse-emerald');
-                } else {
-                    p.classList.remove('rank-pulse-emerald');
-                }
+                    if (rank.id === 'emerald') {
+                        p.classList.add('rank-pulse-emerald');
+                    } else {
+                        p.classList.remove('rank-pulse-emerald');
+                    }
+                });
+
+                // Añadir atributos y eventos de clic
+                groupNode.style.cursor = 'pointer';
+                groupNode.onclick = (e) => {
+                    e.stopPropagation();
+                    RankingService.openMuscleModal(muscleKey);
+                };
             });
-
-            // Añadir atributos y eventos de clic
-            groupNode.style.cursor = 'pointer';
-            groupNode.onclick = (e) => {
-                e.stopPropagation();
-                RankingService.openMuscleModal(muscleKey);
-            };
         });
     },
 
@@ -569,35 +571,45 @@ const RankingService = {
     // Cambiar entre vista frontal y dorsal
     toggleSilhouetteView() {
         this.currentViewMode = this.currentViewMode === 'front' ? 'back' : 'front';
-        const container = document.getElementById('silhouette-interactive-container');
-        const toggleBtn = document.getElementById('btn-toggle-silhouette-view');
+        const containers = document.querySelectorAll('.silhouette-interactive-container, #silhouette-interactive-container');
+        const toggleBtns = document.querySelectorAll('.btn-toggle-silhouette-view, #btn-toggle-silhouette-view');
         
-        if (container) {
+        containers.forEach(container => {
             container.innerHTML = this.getSilhouetteSvgHtml(this.currentViewMode);
-            this.applyRankColorsToSvg();
-        }
+        });
+        this.applyRankColorsToSvg();
 
-        if (toggleBtn) {
-            toggleBtn.innerHTML = this.currentViewMode === 'front' 
-                ? '🔄 Girar a Espalda' 
-                : '🔄 Girar a Frontal';
-        }
+        const btnText = this.currentViewMode === 'front' 
+            ? '🔄 Girar a Espalda' 
+            : '🔄 Girar a Frontal';
+        toggleBtns.forEach(btn => {
+            if (btn.classList.contains('btn-home-rotate')) {
+                btn.innerHTML = this.currentViewMode === 'front' ? '🔄 Girar' : '🔄 Frontal';
+            } else {
+                btn.innerHTML = btnText;
+            }
+        });
     },
 
-    // Renderizar sección de silueta en la pestaña de progreso
+    // Renderizar sección de silueta en la pestaña de progreso y en home
     renderSilhouetteSection() {
-        const container = document.getElementById('silhouette-interactive-container');
-        if (!container) return;
+        const containers = document.querySelectorAll('.silhouette-interactive-container, #silhouette-interactive-container');
+        if (!containers.length) return;
 
-        container.innerHTML = this.getSilhouetteSvgHtml(this.currentViewMode);
+        containers.forEach(container => {
+            container.innerHTML = this.getSilhouetteSvgHtml(this.currentViewMode);
+        });
         this.applyRankColorsToSvg();
         this.renderRankSummaryCards();
         this.updateHeaderBadge();
 
-        const overallEl = document.getElementById('overall-tier-val');
-        if (overallEl) {
+        const overallEls = document.querySelectorAll('.overall-tier-val, #overall-tier-val');
+        if (overallEls.length) {
             const { overallRank, avgLevel } = this.getOverallRank();
-            overallEl.innerHTML = `<span style="color: ${overallRank.color};">${overallRank.icon} ${overallRank.name}</span> <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Nivel ${avgLevel}/8)</span>`;
+            const rankHtml = `<span style="color: ${overallRank.color};">${overallRank.icon} ${overallRank.name}</span> <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Nivel ${avgLevel}/8)</span>`;
+            overallEls.forEach(el => {
+                el.innerHTML = rankHtml;
+            });
         }
     },
 

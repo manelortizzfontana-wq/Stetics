@@ -54,7 +54,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    padding-bottom: 90px; /* Espacio para barra de navegación móvil */
+    padding-bottom: 24px;
 }
 
 /* ===================================================================
@@ -136,8 +136,10 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     background: radial-gradient(circle at 50% 15%, rgba(255, 107, 0, 0.18) 0%, rgba(5, 5, 7, 0.98) 70%, #050507 100%);
     z-index: 1000;
     display: flex;
@@ -324,59 +326,338 @@ body {
 }
 
 /* ===================================================================
-   BARRA DE NAVEGACIÓN INFERIOR (ESTILO STETICS AESTHETICS)
+   BARRA DE NAVEGACIÓN INFERIOR (OCULTA EN FAVOR DEL MENÚ PRINCIPAL)
    =================================================================== */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10, 11, 15, 0.95);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 12px;
-    z-index: 99;
+    display: none !important;
 }
 
-.nav-tab-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
+/* ===================================================================
+   BOTÓN VOLVER AL MENÚ PRINCIPAL (PRESENTE EN TODAS LAS VISTAS)
+   =================================================================== */
+.btn-back-home {
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-muted);
+    padding: 7px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
     font-weight: 700;
     cursor: pointer;
-    padding: 6px 10px;
-    border-radius: var(--radius-md);
     transition: all 0.2s ease;
-    flex: 1;
-    max-width: 110px;
+    margin-bottom: 12px;
+    align-self: flex-start;
 }
 
-.nav-tab-btn .nav-icon {
-    font-size: 1.3rem;
+.btn-back-home:hover,
+.btn-back-home:active {
+    background: rgba(255, 107, 0, 0.16);
+    border-color: rgba(255, 107, 0, 0.45);
+    color: #ff8533;
+    transform: translateX(-2px);
+}
+
+/* ===================================================================
+   MENÚ PRINCIPAL (HUB & DASHBOARD MINIMALISTA)
+   =================================================================== */
+.home-container {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0 16px 0;
+    box-sizing: border-box;
+}
+
+/* Tarjeta motivacional de culturista */
+.home-quote-card {
+    background: linear-gradient(135deg, rgba(20, 22, 30, 0.85) 0%, rgba(13, 15, 20, 0.95) 100%);
+    border: 1px solid rgba(255, 107, 0, 0.22);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.home-quote-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.home-quote-text {
+    font-size: 0.86rem;
+    font-style: italic;
+    color: #e2e8f0;
+    line-height: 1.35;
+    margin: 0;
+    word-break: break-word;
+    transition: opacity 0.2s ease;
+}
+
+.home-quote-meta {
+    margin-top: 5px;
+}
+
+.home-quote-author {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #ff8533;
+    letter-spacing: 0.3px;
+    transition: opacity 0.2s ease;
+}
+
+.btn-home-dice {
+    background: rgba(255, 107, 0, 0.12);
+    border: 1px solid rgba(255, 107, 0, 0.35);
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-home-dice:hover,
+.btn-home-dice:active {
+    background: rgba(255, 107, 0, 0.25);
+    transform: scale(1.08) rotate(15deg);
+    border-color: #ff8533;
+}
+
+/* Botón Hero: Iniciar Entrenamiento */
+.home-hero-wrap {
+    width: 100%;
+}
+
+.btn-hero-workout {
+    width: 100%;
+    min-height: 68px;
+    background: linear-gradient(135deg, #ff6b00 0%, #e65100 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.42);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-hero-workout:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(255, 107, 0, 0.55);
+}
+
+.btn-hero-workout:active {
+    transform: scale(0.98);
+}
+
+.hero-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.hero-icon-flame {
+    font-size: 1.85rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+}
+
+.hero-text-col {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.hero-title {
+    font-size: 1.12rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.hero-subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+    margin-top: 1px;
+}
+
+.hero-action-arrow {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
     transition: transform 0.2s;
 }
 
-.nav-tab-btn:hover {
-    color: #ffffff;
+.btn-hero-workout:hover .hero-action-arrow {
+    transform: translateX(4px);
 }
 
-.nav-tab-btn.active {
-    color: #ff8533;
-    background: rgba(255, 107, 0, 0.15);
-    box-shadow: 0 0 16px rgba(255, 107, 0, 0.2);
+.btn-hero-workout.hero-active-session {
+    background: linear-gradient(135deg, #ff7700 0%, #c2410c 100%);
+    animation: heroActivePulse 2s infinite alternate ease-in-out;
 }
 
-.nav-tab-btn.active .nav-icon {
+@keyframes heroActivePulse {
+    0% { box-shadow: 0 0 16px rgba(255, 107, 0, 0.4); }
+    100% { box-shadow: 0 0 32px rgba(255, 107, 0, 0.85); }
+}
+
+/* Menú de opciones (Cuadrícula 2x2 táctil) */
+.home-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 360px) {
+    .home-menu-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-menu-card {
+    background: #0e1017;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 14px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    user-select: none;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.home-menu-card:hover,
+.home-menu-card:active {
+    background: #161922;
+    border-color: rgba(255, 107, 0, 0.35);
     transform: translateY(-2px);
-    filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.6));
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+.card-icon-chip {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.chip-orange {
+    background: rgba(255, 107, 0, 0.15);
+    border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.chip-green {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.chip-blue {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.chip-purple {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.card-text-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-text-wrap h3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-text-wrap span {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-arrow-indicator {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    transition: transform 0.2s, color 0.2s;
+    margin-left: auto;
+}
+
+.home-menu-card:hover .card-arrow-indicator,
+.home-menu-card:active .card-arrow-indicator {
+    color: #ff8533;
+    transform: translateX(2px);
+}
+
+/* Footer de ajustes */
+.home-footer-strip {
+    margin-top: 4px;
+}
+
+.home-settings-link {
+    width: 100%;
+    background: rgba(18, 20, 28, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.home-settings-link:hover,
+.home-settings-link:active {
+    background: rgba(255, 107, 0, 0.1);
+    border-color: rgba(255, 107, 0, 0.3);
+    color: #ffffff;
 }
 
 /* ===================================================================
@@ -2110,11 +2391,60 @@ input:checked + .slider:before {
    =================================================================== */
 @media (max-width: 640px) {
     .header-container {
-        padding: 10px 16px;
+        padding: 10px 14px;
+    }
+
+    .logo-text {
+        font-size: 1.25rem;
+    }
+
+    .header-user-badge {
+        font-size: 0.76rem;
+        padding: 4px 10px;
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .main-content {
         padding: 14px 12px;
+    }
+
+    .floating-timer {
+        right: 12px;
+        bottom: 20px;
+        width: 250px;
+    }
+
+    .home-quote-card {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .home-menu-card {
+        padding: 12px 10px;
+        gap: 8px;
+    }
+
+    .card-icon-chip {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 10px;
+        font-size: 1.18rem;
+    }
+
+    .card-text-wrap h3 {
+        font-size: 0.88rem;
+    }
+
+    .card-text-wrap span {
+        font-size: 0.7rem;
+    }
+
+    .card-arrow-indicator {
+        font-size: 1.1rem;
     }
 
     .workout-header-bar {
@@ -2128,12 +2458,6 @@ input:checked + .slider:before {
     .set-input {
         padding: 6px 2px;
         font-size: 0.95rem;
-    }
-
-    .floating-timer {
-        right: 12px;
-        bottom: 85px;
-        width: 250px;
     }
 
     /* Rutinas y creador adaptados a móviles */
@@ -2346,6 +2670,60 @@ input:checked + .slider:before {
     padding: 8px 12px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: var(--radius-sm);
+}
+
+/* Adaptación compacta de la Silueta para el Menú Principal (Home) */
+.home-silhouette-card {
+    background: linear-gradient(180deg, #10121a 0%, #06070b 100%);
+    border: 1px solid rgba(255, 107, 0, 0.28);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 107, 0, 0.08);
+}
+
+.home-silhouette-card .silhouette-card-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin-bottom: 6px;
+    padding-bottom: 8px;
+    gap: 8px;
+}
+
+.home-silhouette-card .overall-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.8px;
+}
+
+.home-silhouette-card .overall-tier-val {
+    font-size: 0.95rem;
+}
+
+.home-silhouette-card .btn-home-rotate {
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 32px;
+}
+
+.home-silhouette-card .silhouette-viewport {
+    min-height: 250px;
+    max-height: 280px;
+    padding: 2px 0;
+}
+
+.home-silhouette-card .silhouette-svg-main {
+    max-width: 195px;
+    max-height: 275px;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.85));
+}
+
+.home-silhouette-card .silhouette-hint {
+    margin-top: 6px;
+    font-size: 0.74rem;
+    padding: 5px 8px;
 }
 
 /* Resumen de músculos debajo de la silueta */
